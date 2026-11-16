@@ -9,5 +9,15 @@
     "query": "Birds of paradise",
     "min_price": null,
     "max_price": 350
+  }, 
+  {
+    "query": "3724",
+    "min_price": null,
+    "max_price": 1000
+  },
+  {
+    "query": "10194",
+    "min_price": null,
+    "max_price": 1000  
   }
 ]
