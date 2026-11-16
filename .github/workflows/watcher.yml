@@ -1,0 +1,31 @@
+
+name: Marktplaats watcher
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # try every 5 minutes
+  workflow_dispatch:         # adds a "Run workflow" button for testing
+
+permissions:
+  contents: write
+
+concurrency:
+  group: marktplaats-watcher
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Marktplaats
+        run: python3 watcher.py
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+
+      - name: Remember which ads were already seen
+        run: |
+          git config user.name "watcher-bot"
+          git config user.email "watcher-bot@users.noreply.github.com"
+          git add seen.json
+          git diff --cached --quiet || (git commit -m "Update seen ads" && git push)
