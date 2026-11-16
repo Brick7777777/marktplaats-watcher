@@ -70,6 +70,21 @@ def matches_price(listing, search):
     return True
 
 
+def matches_words(listing, search):
+    """Only keep ads whose title or description contains EVERY word of the
+    search term, and none of the words in the optional 'exclude' list."""
+    text = (str(listing.get("title", "")) + " " +
+            str(listing.get("description", ""))).lower()
+    if search.get("strict", True):
+        for word in search["query"].lower().split():
+            if word not in text:
+                return False
+    for word in search.get("exclude") or []:
+        if str(word).lower() in text:
+            return False
+    return True
+
+
 def ad_link(listing):
     path = listing.get("vipUrl") or ""
     if path.startswith("http"):
@@ -119,7 +134,8 @@ def main():
             if not item_id or item_id in known:
                 continue
             new_ids.append(item_id)
-            if first_run or not matches_price(listing, search):
+            if first_run or not matches_price(listing, search) \
+                    or not matches_words(listing, search):
                 continue
             title = listing.get("title", "Nieuwe advertentie")
             city = (listing.get("location") or {}).get("cityName", "")
