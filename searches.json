@@ -1,33 +1,32 @@
-
 [
   {
-    "query": "Lego 10289",
+    "query": "lego 10289",
     "min_price": null,
-    "max_price": 30000
+    "max_price": 300,
+    "exclude": ["gezocht", "lege doos"]
   },
   {
-    "query": "Birds of paradise",
+    "query": "lego 3724",
     "min_price": null,
-    "max_price": 350
-  }, 
-  {
-    "query": "3724",
-    "min_price": null,
-    "max_price": 1000
+    "max_price": 1000,
+    "exclude": ["gezocht", "lege doos"]
   },
   {
-    "query": "10194",
+    "query": "lego 10194",
     "min_price": null,
-    "max_price": 1000  
+    "max_price": 1000,
+    "exclude": ["gezocht", "lege doos"]
   },
   {
-    "query": "Lego 10259",
+    "query": "lego 10259",
     "min_price": null,
-    "max_price": 1000  
+    "max_price": 1000,
+    "exclude": ["gezocht", "lege doos"]
   },
   {
-    "query": "Lego 10229",
+    "query": "lego 10229",
     "min_price": null,
-    "max_price": 1000
-  } 
+    "max_price": 1000,
+    "exclude": ["gezocht", "lege doos"]
+  }
 ]
