@@ -1,0 +1,13 @@
+
+[
+  {
+    "query": "toyota gr86",
+    "min_price": null,
+    "max_price": 30000
+  },
+  {
+    "query": "playstation 5",
+    "min_price": 200,
+    "max_price": 350
+  }
+]
