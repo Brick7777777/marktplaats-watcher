@@ -28,4 +28,4 @@ jobs:
           git config user.name "watcher-bot"
           git config user.email "watcher-bot@users.noreply.github.com"
           git add seen.json
-          git diff --cached --quiet || (git commit -m "Update seen ads" && git push)
+          git diff --cached --quiet || (git commit -m "Update seen ads" && git pull --rebase -X theirs && git push)
