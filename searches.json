@@ -19,5 +19,15 @@
     "query": "10194",
     "min_price": null,
     "max_price": 1000  
-  }
+  },
+  {
+    "query": "Lego 10259",
+    "min_price": null,
+    "max_price": 1000  
+  },
+  {
+    "query": "Lego 10229",
+    "min_price": null,
+    "max_price": 1000
+  } 
 ]
