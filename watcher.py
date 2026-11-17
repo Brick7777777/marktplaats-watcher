@@ -1,8 +1,8 @@
-
 """
 Marktplaats watcher
-Checks your Marktplaats searches and sends a push notification (via ntfy)
-to your iPhone for every NEW ad. You normally only edit searches.json.
+Checks your Marktplaats searches and sends a push notification to your
+iPhone for every NEW ad: via ntfy, via Telegram, or both (whichever has its
+secrets filled in on GitHub). You normally only edit searches.json.
 """
 import json
 import os
@@ -14,6 +14,8 @@ SEARCHES_FILE = "searches.json"
 SEEN_FILE = "seen.json"
 API_URL = "https://www.marktplaats.nl/lrp/api/search"
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "").strip()
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
 MAX_REMEMBERED = 500  # per search, so the seen-list doesn't grow forever
 
 HEADERS = {
@@ -92,20 +94,46 @@ def ad_link(listing):
     return "https://www.marktplaats.nl" + path
 
 
-def notify(title, message, click=None):
-    if not NTFY_TOPIC:
-        print("  (no NTFY_TOPIC set, would have sent:)", title, "-", message)
-        return
-    payload = {"topic": NTFY_TOPIC, "title": title, "message": message, "priority": 4}
-    if click:
-        payload["click"] = click
+def post_json(url, payload):
     req = urllib.request.Request(
-        "https://ntfy.sh",
+        url,
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
     urllib.request.urlopen(req, timeout=30).read()
+
+
+def send_ntfy(title, message, click=None):
+    payload = {"topic": NTFY_TOPIC, "title": title, "message": message, "priority": 4}
+    if click:
+        payload["click"] = click
+    post_json("https://ntfy.sh", payload)
+
+
+def send_telegram(title, message, click=None):
+    text = f"{title}\n{message}" + (f"\n{click}" if click else "")
+    post_json(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+              {"chat_id": TELEGRAM_CHAT_ID, "text": text})
+
+
+def notify(title, message, click=None):
+    sent = False
+    # Each channel is tried on its own, so if one fails the other still works.
+    if NTFY_TOPIC:
+        try:
+            send_ntfy(title, message, click)
+            sent = True
+        except Exception as e:
+            print(f"  ntfy failed: {e}")
+    if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
+        try:
+            send_telegram(title, message, click)
+            sent = True
+        except Exception as e:
+            print(f"  Telegram failed: {e}")
+    if not sent:
+        print("  (no notification sent:)", title, "-", message)
 
 
 def main():
